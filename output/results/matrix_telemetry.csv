@@ -1,0 +1,5 @@
+llm,embedder,strategy,questions,retrieval_hit@k,answer_hit_rate,mean_token_f1,numeric_match_rate,mean_latency_s,mean_completion_tokens,mean_llm_calls,judge_supported_rate,mean_tokens_per_second,mean_process_rss_mb,model_memory_mb,mean_energy_j,mean_avg_watts,power_measured
+qwen3:4b-instruct,embeddinggemma:latest,hybrid,2,1.0,1.0,0.639,1.0,71.679,90.0,2.0,1.0,7.09,37.6,3879.1,4659.21,65.0,False
+qwen3:4b-instruct,embeddinggemma:latest,self_rag,2,1.0,1.0,0.657,1.0,62.666,115.5,3.0,0.5,7.93,37.6,3879.1,4073.32,65.0,False
+qwen3:4b-instruct,qwen3-embedding:0.6b,hybrid,2,1.0,1.0,0.639,1.0,76.06,90.0,2.0,1.0,6.47,39.4,4424.0,4943.98,65.0,False
+qwen3:4b-instruct,qwen3-embedding:0.6b,self_rag,2,1.0,1.0,0.657,1.0,66.271,115.5,3.0,0.5,7.37,39.4,4424.0,4307.62,65.0,False

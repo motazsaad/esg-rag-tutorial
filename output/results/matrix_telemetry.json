@@ -1,0 +1,438 @@
+{
+  "config": {
+    "llms": [
+      "qwen3:4b-instruct"
+    ],
+    "embedders": [
+      "embeddinggemma:latest",
+      "qwen3-embedding:0.6b"
+    ],
+    "strategies": [
+      "hybrid",
+      "self_rag"
+    ],
+    "dataset": "real",
+    "limit": 2,
+    "judge": true,
+    "chunking": {
+      "strategy": "section",
+      "max_words": 140,
+      "overlap_words": 25,
+      "min_words": 30,
+      "semantic_threshold": 0.15
+    },
+    "retrieval": {
+      "top_k": 4,
+      "mode": "hybrid",
+      "bm25_k1": 1.5,
+      "bm25_b": 0.75,
+      "rrf_k": 60,
+      "max_evidence_chars": 900,
+      "candidate_multiplier": 3,
+      "infer_filters": false
+    },
+    "generation": {
+      "temperature": 0.0,
+      "max_tokens": 160,
+      "seed": 42,
+      "num_ctx": 8192,
+      "think": false,
+      "insufficient_evidence": "INSUFFICIENT EVIDENCE"
+    }
+  },
+  "missing_models": [],
+  "retrieval_benchmarks": [
+    {
+      "embedder": "embeddinggemma:latest",
+      "queries": 20,
+      "ndcg@10": 0.9697,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "source": {
+        "repo": "https://github.com/datalab-unisalento/benchmark-embeddings-esg",
+        "paper": "Benchmarking Embedding Models for ESG Data (ITADATA 2026)",
+        "license": "Apache-2.0",
+        "note": "First 24 English records, unchanged, from the 312-record cleaned benchmark."
+      }
+    },
+    {
+      "embedder": "qwen3-embedding:0.6b",
+      "queries": 20,
+      "ndcg@10": 0.9697,
+      "mrr": 1.0,
+      "precision@1": 1.0,
+      "source": {
+        "repo": "https://github.com/datalab-unisalento/benchmark-embeddings-esg",
+        "paper": "Benchmarking Embedding Models for ESG Data (ITADATA 2026)",
+        "license": "Apache-2.0",
+        "note": "First 24 English records, unchanged, from the 312-record cleaned benchmark."
+      }
+    }
+  ],
+  "results": [
+    {
+      "llm": "qwen3:4b-instruct",
+      "embedder": "embeddinggemma:latest",
+      "strategy": "hybrid",
+      "summary": {
+        "dataset": "real",
+        "strategy": "hybrid",
+        "llm": "qwen3:4b-instruct",
+        "embedder": "embeddinggemma:latest",
+        "corpus": "real",
+        "questions": 2,
+        "retrieval_hit@k": 1.0,
+        "answer_hit_rate": 1.0,
+        "mean_token_f1": 0.639,
+        "numeric_match_rate": 1.0,
+        "mean_latency_s": 71.679,
+        "mean_completion_tokens": 90.0,
+        "mean_llm_calls": 2.0,
+        "mean_tokens_per_second": 7.09,
+        "mean_process_rss_mb": 37.6,
+        "model_memory_mb": 3879.1,
+        "mean_energy_j": 4659.21,
+        "mean_avg_watts": 65.0,
+        "power_measured": false,
+        "judge_supported_rate": 1.0
+      },
+      "rows": [
+        {
+          "q_id": "real-3",
+          "question": "What is the total amount of assets under management for Amundi, and how does it rank globally?",
+          "reference": "Amundi manages €1,729 billion in assets and ranks in the top 10 worldwide.",
+          "answer": "Amundi manages €1,729 billion in assets under management and ranks in the top 10 worldwide [S1]. It is the leading European asset management company [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.667,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 73.9166,
+          "completion_tokens": 84,
+          "llm_calls": 2,
+          "tokens_per_second": 6.97,
+          "process_rss_mb": 37.62,
+          "model_memory_mb": 3879.1,
+          "energy_j": 4804.728,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "375_58_2020::c002",
+            "375_58_2020::c003",
+            "300_45_2020::c003",
+            "375_58_2020::c001"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence states Amundi manages €1,729 billion and ranks in the top 10 worldwide as the leading European asset manager."
+          }
+        },
+        {
+          "q_id": "real-52",
+          "question": "What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?",
+          "reference": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km.",
+          "answer": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km [S1]. This figure is based on official WLTP data for Volvo cars sold in Europe (EU) [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.611,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 69.4413,
+          "completion_tokens": 96,
+          "llm_calls": 2,
+          "tokens_per_second": 7.22,
+          "process_rss_mb": 37.65,
+          "model_memory_mb": 3879.1,
+          "energy_j": 4513.688,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "377_60_2021::c002",
+            "377_60_2021::c003",
+            "377_60_2021::c001",
+            "377_60_2021::c004"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence states the 2021 EU fleet average CO₂ emissions were 139 g/km based on WLTP data."
+          }
+        }
+      ]
+    },
+    {
+      "llm": "qwen3:4b-instruct",
+      "embedder": "embeddinggemma:latest",
+      "strategy": "self_rag",
+      "summary": {
+        "dataset": "real",
+        "strategy": "self_rag",
+        "llm": "qwen3:4b-instruct",
+        "embedder": "embeddinggemma:latest",
+        "corpus": "real",
+        "questions": 2,
+        "retrieval_hit@k": 1.0,
+        "answer_hit_rate": 1.0,
+        "mean_token_f1": 0.657,
+        "numeric_match_rate": 1.0,
+        "mean_latency_s": 62.666,
+        "mean_completion_tokens": 115.5,
+        "mean_llm_calls": 3.0,
+        "mean_tokens_per_second": 7.93,
+        "mean_process_rss_mb": 37.6,
+        "model_memory_mb": 3879.1,
+        "mean_energy_j": 4073.32,
+        "mean_avg_watts": 65.0,
+        "power_measured": false,
+        "judge_supported_rate": 0.5
+      },
+      "rows": [
+        {
+          "q_id": "real-3",
+          "question": "What is the total amount of assets under management for Amundi, and how does it rank globally?",
+          "reference": "Amundi manages €1,729 billion in assets and ranks in the top 10 worldwide.",
+          "answer": "Amundi manages €1,729 billion in assets under management [S1]. It ranks as the leading European asset management company and is in the top 10 worldwide [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.667,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 54.4542,
+          "completion_tokens": 97,
+          "llm_calls": 3,
+          "tokens_per_second": 8.64,
+          "process_rss_mb": 37.65,
+          "model_memory_mb": 3879.1,
+          "energy_j": 3539.523,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "375_58_2020::c002"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence confirms Amundi's €1,729 billion AUM and top 10 global ranking among asset managers."
+          }
+        },
+        {
+          "q_id": "real-52",
+          "question": "What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?",
+          "reference": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km.",
+          "answer": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km [S1]. This figure is based on WLTP data and reflects the EU fleet average [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.647,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 70.8787,
+          "completion_tokens": 134,
+          "llm_calls": 3,
+          "tokens_per_second": 7.22,
+          "process_rss_mb": 37.65,
+          "model_memory_mb": 3879.1,
+          "energy_j": 4607.12,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "377_60_2021::c002",
+            "377_60_2021::c003"
+          ],
+          "judge": {
+            "supported": false,
+            "explanation": "The evidence states 139 g/km for WLTP in 2021, but the answer cites 139 g/km from S1, which reports a decrease to 139 g/km, not the average."
+          }
+        }
+      ]
+    },
+    {
+      "llm": "qwen3:4b-instruct",
+      "embedder": "qwen3-embedding:0.6b",
+      "strategy": "hybrid",
+      "summary": {
+        "dataset": "real",
+        "strategy": "hybrid",
+        "llm": "qwen3:4b-instruct",
+        "embedder": "qwen3-embedding:0.6b",
+        "corpus": "real",
+        "questions": 2,
+        "retrieval_hit@k": 1.0,
+        "answer_hit_rate": 1.0,
+        "mean_token_f1": 0.639,
+        "numeric_match_rate": 1.0,
+        "mean_latency_s": 76.06,
+        "mean_completion_tokens": 90.0,
+        "mean_llm_calls": 2.0,
+        "mean_tokens_per_second": 6.47,
+        "mean_process_rss_mb": 39.4,
+        "model_memory_mb": 4424.0,
+        "mean_energy_j": 4943.98,
+        "mean_avg_watts": 65.0,
+        "power_measured": false,
+        "judge_supported_rate": 1.0
+      },
+      "rows": [
+        {
+          "q_id": "real-3",
+          "question": "What is the total amount of assets under management for Amundi, and how does it rank globally?",
+          "reference": "Amundi manages €1,729 billion in assets and ranks in the top 10 worldwide.",
+          "answer": "Amundi manages €1,729 billion in assets under management and ranks in the top 10 worldwide [S1]. It is the leading European asset management company [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.667,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 77.8989,
+          "completion_tokens": 84,
+          "llm_calls": 2,
+          "tokens_per_second": 6.42,
+          "process_rss_mb": 39.4,
+          "model_memory_mb": 4424.0,
+          "energy_j": 5063.55,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "375_58_2020::c002",
+            "375_58_2020::c003",
+            "300_45_2020::c003",
+            "375_58_2020::c001"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence states Amundi manages €1,729 billion and ranks in the top 10 worldwide as the leading European asset manager."
+          }
+        },
+        {
+          "q_id": "real-52",
+          "question": "What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?",
+          "reference": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km.",
+          "answer": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km [S1]. This figure is based on official WLTP data for Volvo cars sold in Europe (EU) [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.611,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 74.2218,
+          "completion_tokens": 96,
+          "llm_calls": 2,
+          "tokens_per_second": 6.52,
+          "process_rss_mb": 39.4,
+          "model_memory_mb": 4424.0,
+          "energy_j": 4824.419,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "377_60_2021::c002",
+            "377_60_2021::c003",
+            "377_60_2021::c001",
+            "377_60_2021::c004"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence states the 2021 EU fleet average CO₂ emissions were 139 g/km based on WLTP data."
+          }
+        }
+      ]
+    },
+    {
+      "llm": "qwen3:4b-instruct",
+      "embedder": "qwen3-embedding:0.6b",
+      "strategy": "self_rag",
+      "summary": {
+        "dataset": "real",
+        "strategy": "self_rag",
+        "llm": "qwen3:4b-instruct",
+        "embedder": "qwen3-embedding:0.6b",
+        "corpus": "real",
+        "questions": 2,
+        "retrieval_hit@k": 1.0,
+        "answer_hit_rate": 1.0,
+        "mean_token_f1": 0.657,
+        "numeric_match_rate": 1.0,
+        "mean_latency_s": 66.271,
+        "mean_completion_tokens": 115.5,
+        "mean_llm_calls": 3.0,
+        "mean_tokens_per_second": 7.37,
+        "mean_process_rss_mb": 39.4,
+        "model_memory_mb": 4424.0,
+        "mean_energy_j": 4307.62,
+        "mean_avg_watts": 65.0,
+        "power_measured": false,
+        "judge_supported_rate": 0.5
+      },
+      "rows": [
+        {
+          "q_id": "real-3",
+          "question": "What is the total amount of assets under management for Amundi, and how does it rank globally?",
+          "reference": "Amundi manages €1,729 billion in assets and ranks in the top 10 worldwide.",
+          "answer": "Amundi manages €1,729 billion in assets under management [S1]. It ranks as the leading European asset management company and is in the top 10 worldwide [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.667,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 59.4393,
+          "completion_tokens": 97,
+          "llm_calls": 3,
+          "tokens_per_second": 7.55,
+          "process_rss_mb": 39.4,
+          "model_memory_mb": 4424.0,
+          "energy_j": 3863.557,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "375_58_2020::c002"
+          ],
+          "judge": {
+            "supported": true,
+            "explanation": "The evidence confirms Amundi's €1,729 billion AUM and top 10 global ranking among asset managers."
+          }
+        },
+        {
+          "q_id": "real-52",
+          "question": "What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?",
+          "reference": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km.",
+          "answer": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km [S1]. This figure is based on WLTP data and reflects the EU fleet average [S1].",
+          "retrieval_hit": true,
+          "answer_hit": true,
+          "token_f1": 0.647,
+          "numeric_match": true,
+          "citations": [
+            "1"
+          ],
+          "latency_s": 73.1027,
+          "completion_tokens": 134,
+          "llm_calls": 3,
+          "tokens_per_second": 7.19,
+          "process_rss_mb": 39.4,
+          "model_memory_mb": 4424.0,
+          "energy_j": 4751.674,
+          "avg_watts": 65.0,
+          "power_measured": false,
+          "passages": [
+            "377_60_2021::c002",
+            "377_60_2021::c003"
+          ],
+          "judge": {
+            "supported": false,
+            "explanation": "The evidence states 139 g/km for WLTP in 2021, but the answer cites 139 g/km from S1, which reports a decrease to 139 g/km, not the average."
+          }
+        }
+      ]
+    }
+  ],
+  "completed_cells": 4,
+  "expected_cells": 4
+}

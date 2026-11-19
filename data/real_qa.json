@@ -1,0 +1,70 @@
+{
+  "source": {
+    "repo": "https://github.com/datalab-unisalento/ESG-RAG-benchmark-ragas",
+    "paper": "Empirical Evaluation of Open-Source Large Language Models for RAG in ESG Domain (IEEE BigData 2026, BigD275)",
+    "license": "MIT",
+    "note": "6 QA pairs and 6 verbatim report excerpts sampled from the published benchmark; excerpts are trimmed around the answer-bearing passage."
+  },
+  "questions": [
+    {
+      "q_id": "real-3",
+      "question": "What is the total amount of assets under management for Amundi, and how does it rank globally?",
+      "reference": "Amundi manages €1,729 billion in assets and ranks in the top 10 worldwide.",
+      "document_source": "real_corpus/375_58_2020.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#3",
+      "persona": "Environmental KPI Extractor",
+      "esg_dimension": "Governance"
+    },
+    {
+      "q_id": "real-52",
+      "question": "What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?",
+      "reference": "The average CO₂ emissions of Volvo cars sold in Europe in 2021 were 139 g/km.",
+      "document_source": "real_corpus/377_60_2021.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#52",
+      "persona": "Governance KPI Extractor",
+      "esg_dimension": "Environmental"
+    },
+    {
+      "q_id": "real-82",
+      "question": "What was the dividend per share paid by Continental AG in 2022?",
+      "reference": "The dividend per share paid by Continental AG in 2022 was €2.20.",
+      "document_source": "real_corpus/327_52_2022.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#82",
+      "persona": "Environmental KPI Extractor",
+      "esg_dimension": "Governance"
+    },
+    {
+      "q_id": "real-190",
+      "question": "What was the percentage of part-time employees in the Mercedes-Benz Group as of December 31, 2023?",
+      "reference": "The percentage of part-time employees in the Mercedes-Benz Group as of December 31, 2023, was 8.8%.",
+      "document_source": "real_corpus/44_7_2023.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#190",
+      "persona": "Environmental KPI Extractor",
+      "esg_dimension": "Social"
+    },
+    {
+      "q_id": "real-207",
+      "question": "What is ENGIE's target reduction in GHG emissions for its energy production by 2030?",
+      "reference": "ENGIE's target reduction in GHG emissions for its energy production by 2030 is 43 Mt CO₂.",
+      "document_source": "real_corpus/132_18_2020.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#207",
+      "persona": "Environmental KPI Extractor",
+      "esg_dimension": "Environmental"
+    },
+    {
+      "q_id": "real-160",
+      "question": "What was Maersk's total tax charge in 2020, and how did it compare to 2019?",
+      "reference": "Maersk's total tax charge in 2020 was 407 million USD, compared to 458 million USD in 2019.",
+      "document_source": "real_corpus/300_45_2020.md",
+      "source_repo": "datalab-unisalento/ESG-RAG-benchmark-ragas",
+      "source_path": "outputs/testset/01_esg_testset.json#160",
+      "persona": "Social KPI Extractor",
+      "esg_dimension": "Governance"
+    }
+  ]
+}

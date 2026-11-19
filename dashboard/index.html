@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESG RAG — results dashboard</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e;
+          --blue:#58a6ff; --green:#3fb950; --amber:#d29922; --red:#f85149; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  header { padding:22px 28px 14px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 4px; font-size:21px; letter-spacing:.2px; }
+  h1 span { color:var(--blue); }
+  .sub { color:var(--muted); font-size:13px; }
+  main { max-width:1400px; margin:0 auto; padding:22px 28px 60px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:20px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .card .label { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px; }
+  .card .value { font-size:26px; font-weight:650; margin-top:5px; }
+  .card .value.small { font-size:19px; word-break:break-all; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-bottom:18px; }
+  .panel h2 { font-size:15px; margin:0 0 12px; }
+  .progress { height:8px; background:#21262d; border-radius:6px; overflow:hidden; margin:8px 0 6px; }
+  .progress > div { height:100%; background:linear-gradient(90deg,var(--blue),var(--green)); transition:width .4s; }
+  .toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+  button, select { background:#21262d; color:var(--text); border:1px solid var(--line); border-radius:6px;
+                   padding:6px 11px; font-size:12px; cursor:pointer; }
+  button.active, button:hover, select:hover { border-color:var(--blue); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { text-align:left; color:var(--muted); font-weight:600; padding:8px 9px; border-bottom:1px solid var(--line);
+       cursor:pointer; white-space:nowrap; }
+  td { padding:8px 9px; border-bottom:1px solid #21262d; vertical-align:top; }
+  tr:hover td { background:#1c2128; }
+  tr.clickable { cursor:pointer; }
+  .num { text-align:right; font-variant-numeric:tabular-nums; }
+  .pill { display:inline-block; padding:1px 7px; border-radius:10px; font-size:11px; border:1px solid var(--line); }
+  .pill.good { color:var(--green); border-color:#2ea04355; background:#2ea04315; }
+  .pill.bad  { color:var(--red);   border-color:#f8514955; background:#f8514915; }
+  .pill.mid  { color:var(--amber); border-color:#d2992255; background:#d2992215; }
+  .bars { display:flex; flex-direction:column; gap:9px; }
+  .bar-row { display:grid; grid-template-columns:210px 1fr 70px; gap:10px; align-items:center; font-size:12px; }
+  .bar-track { background:#21262d; border-radius:5px; height:14px; overflow:hidden; }
+  .bar-fill { height:100%; background:var(--blue); }
+  .muted { color:var(--muted); }
+  .detail td { background:#11161d; font-size:12px; }
+  .detail pre { white-space:pre-wrap; margin:3px 0; color:#c9d1d9; font:12px/1.45 ui-monospace,Menlo,monospace; }
+  .legend { display:flex; gap:14px; font-size:11px; color:var(--muted); margin-top:8px; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; }
+  svg { width:100%; height:300px; }
+  .empty { color:var(--muted); padding:18px 4px; }
+  a { color:var(--blue); }
+  .tabs { display:flex; gap:6px; padding:0 28px; border-bottom:1px solid var(--line); }
+  .tabs button { border-radius:7px 7px 0 0; border-bottom-color:transparent; padding:9px 16px; font-size:13px; }
+  .tabs button.active { background:var(--panel); color:var(--blue); border-color:var(--line); border-bottom-color:var(--panel); }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(235px,1fr)); gap:12px 18px; }
+  .grid2 label { display:flex; flex-direction:column; gap:5px; font-size:12px; color:var(--muted); }
+  .grid2 label.wide { grid-column:1 / -1; }
+  .grid2 label.checks { flex-direction:row; align-items:center; gap:8px; color:var(--text); }
+  .grid2 input, .grid2 select { width:100%; background:#21262d; color:var(--text); border:1px solid var(--line);
+    border-radius:6px; padding:7px 9px; font-size:13px; }
+  .grid2 input[type=checkbox] { width:auto; }
+  button.primary { background:#238636; border-color:#2ea043; color:#fff; font-weight:600; padding:8px 16px; }
+  button.primary:disabled { opacity:.5; cursor:not-allowed; }
+  .checkgroup { padding:2px 0 6px; }
+  .group-title { font-size:12px; color:var(--muted); margin-bottom:7px; }
+  .checkgrid { display:flex; flex-wrap:wrap; gap:7px; }
+  .checkgrid label { display:inline-flex; align-items:center; gap:6px; background:#21262d;
+    border:1px solid var(--line); border-radius:16px; padding:5px 11px; font-size:12px; cursor:pointer; }
+  .checkgrid label:hover { border-color:var(--blue); }
+  .checkgrid input { accent-color:var(--blue); }
+</style>
+</head>
+<body>
+<header>
+  <h1>ESG RAG <span>/ results dashboard</span></h1>
+  <div class="sub">Real published ESG sample · 2 LLMs × 2 embedders × RAG techniques · auto-refresh 8 s</div>
+</header>
+<nav class="tabs">
+  <button id="tabResults" class="active" onclick="showPage('results')">📊 Results</button>
+  <button id="tabRun" onclick="showPage('run')">⚙️ Configure &amp; Run</button>
+</nav>
+<main>
+<section id="resultsPage">
+  <div class="panel" id="statusPanel">Loading status…</div>
+  <div class="cards" id="cards"></div>
+  <div class="panel">
+    <h2>Cell results <span class="muted" id="cellCount"></span></h2>
+    <div class="toolbar" id="filters"></div>
+    <div id="table">Loading…</div>
+  </div>
+  <div class="panel">
+    <h2>Embedding quality — graded ESG retrieval set</h2>
+    <div class="bars" id="bars"></div>
+  </div>
+  <div class="panel">
+    <h2>Quality vs. <select id="xMetric">
+      <option value="mean_latency_s">latency (s)</option>
+      <option value="mean_tokens_per_second">decode speed (tok/s)</option>
+      <option value="mean_energy_j">energy (J / query)</option>
+      <option value="mean_avg_watts">average power (W)</option>
+    </select></h2>
+    <div id="scatter"></div>
+    <div class="legend"><span><i class="dot" style="background:var(--blue)"></i>embeddinggemma</span>
+      <span><i class="dot" style="background:var(--amber)"></i>qwen3-embedding</span>
+      <span><i class="dot" style="background:var(--green)"></i>other embedder</span></div>
+  </div>
+  <div class="panel">
+    <h2>Latest lineage records</h2>
+    <div id="lineage" class="muted">Loading…</div>
+  </div>
+</section>
+
+<section id="runPage" style="display:none">
+  <div class="panel">
+    <h2>Experiment setup <span class="muted">— local Ollama only; parameters are allowlisted</span></h2>
+    <div class="grid2">
+      <label>Run type
+        <select id="runMode">
+          <option value="query">Single query</option>
+          <option value="benchmark">Benchmark (quality metrics)</option>
+          <option value="matrix" selected>Model × technique matrix</option>
+        </select></label>
+      <label>Dataset
+        <select id="runDataset"><option value="real">Real published ESG sample</option><option value="synthetic">Synthetic smoke corpus</option></select></label>
+      <div class="wide checkgroup"><div class="group-title">Generator LLM(s) — check any combination</div><div class="checkgrid" id="llmChecks"></div></div>
+      <div class="wide checkgroup"><div class="group-title">Embedding model(s) — check any combination</div><div class="checkgrid" id="embedChecks"></div></div>
+      <div class="wide checkgroup"><div class="group-title">RAG techniques — check any combination</div><div class="checkgrid" id="strategyChecks"></div></div>
+      <label>Questions per cell / limit <input id="runLimit" type="number" min="1" max="20" value="2"></label>
+      <label class="wide">Question (used by single-query mode)
+        <input id="runQuestion" type="text" placeholder="e.g. What were Volvo's Scope 1 emissions in 2021?"></label>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Pipeline parameters</h2>
+    <div class="grid2">
+      <label>Chunking strategy <select id="runChunking"><option>section</option><option>fixed</option><option>semantic</option></select></label>
+      <label>Retrieval mode <select id="runRetrieval"><option>hybrid</option><option>dense</option><option>bm25</option></select></label>
+      <label>Max words / chunk <input id="runMaxWords" type="number" min="40" max="400" value="140"></label>
+      <label>Overlap words <input id="runOverlap" type="number" min="0" max="100" value="25"></label>
+      <label>Top-K passages <input id="runTopK" type="number" min="1" max="20" value="4"></label>
+      <label>Max output tokens <input id="runMaxTokens" type="number" min="32" max="1024" value="160"></label>
+      <label>Temperature <input id="runTemp" type="number" min="0" max="1" step="0.1" value="0"></label>
+      <label>Power source <select id="runPower"><option>auto</option><option>rapl</option><option>nvidia</option><option>estimate</option><option>none</option></select></label>
+      <label>Fallback watts <input id="runWatts" type="number" min="1" max="500" value="65"></label>
+      <label class="checks"><input id="runJudge" type="checkbox"> LLM-as-judge</label>
+      <label class="checks"><input id="runInfer" type="checkbox"> LLM-inferred metadata filters</label>
+    </div>
+    <div class="toolbar" style="margin-top:16px">
+      <button id="runButton" class="primary">▶ Run experiment</button>
+      <span id="runStatus" class="muted">Idle.</span>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Run output</h2>
+    <div class="progress"><div id="jobProgress" style="width:0%"></div></div>
+    <div id="runLog" class="muted">No job yet.</div>
+    <pre id="runResult" style="white-space:pre-wrap;max-height:420px;overflow:auto;font:12px/1.45 ui-monospace,Menlo,monospace"></pre>
+  </div>
+</section>
+</main>
+<script>
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = (v, d=3) => (v === null || v === undefined) ? '—' : Number(v).toFixed(d);
+const pct = v => v === null || v === undefined ? '—' : (v*100).toFixed(0)+'%';
+const pill = v => v === null || v === undefined ? '<span class="pill">n/a</span>'
+  : `<span class="pill ${v>=0.8?'good':v>=0.5?'mid':'bad'}">${fmt(v,2)}</span>`;
+const state = { matrix:{}, progress:{}, status:{}, lineage:{}, filter:'all', llmFilter:'all',
+  embedFilter:'all', esgFilter:'all', q:'', sort:'answer_hit_rate', desc:true, open:new Set() };
+const ESG = ['Environmental','Social','Governance','Other'];
+function esgOf(q) {
+  if (q && q.esg_dimension) return q.esg_dimension;
+  const t = ((q && q.question) || '').toLowerCase();
+  if (/emission|co2|carbon|energy|climate|renewable|ghg|environment|waste|water/.test(t)) return 'Environmental';
+  if (/employee|women|gender|social|training|hiring|diversity|safety|injur|part-time/.test(t)) return 'Social';
+  if (/board|governance|audit|tax|dividend|shareholder|committee|compensation|assets under management/.test(t)) return 'Governance';
+  return 'Other';
+}
+function matchesQuestion(q) {
+  if (state.esgFilter !== 'all' && esgOf(q) !== state.esgFilter) return false;
+  if (state.q && !((q.question||'').toLowerCase().includes(state.q))) return false;
+  return true;
+}
+
+// ---------------- configure & run page ----------------
+let cfgCache = null, activeJob = null, jobPoll = null, jobStartQueries = 0;
+const $ = id => document.getElementById(id);
+function showPage(page) {
+  $('resultsPage').style.display = page === 'results' ? '' : 'none';
+  $('runPage').style.display = page === 'run' ? '' : 'none';
+  $('tabResults').classList.toggle('active', page === 'results');
+  $('tabRun').classList.toggle('active', page === 'run');
+  if (page === 'run') loadConfig();
+}
+function fillChecks(id, values, preselected) {
+  const el = $(id);
+  if (el.children.length) return;  // keep user's choices across auto-refresh
+  el.innerHTML = values.map(v=>`<label><input type="checkbox" value="${esc(v)}" ${preselected.includes(v)?'checked':''}> ${esc(v)}</label>`).join('');
+}
+function checkedValues(id) {
+  return [...$(id).querySelectorAll('input:checked')].map(i=>i.value);
+}
+async function loadConfig() {
+  try {
+    cfgCache = await fetch('/api/config').then(r=>r.json());
+    const models = cfgCache.available_models || [];
+    const active = cfgCache.active || {};
+    fillChecks('llmChecks', models.filter(m=>!/embed/i.test(m)), [active.generator || 'qwen3:4b-instruct']);
+    fillChecks('embedChecks', models.filter(m=>/embed|gemma/i.test(m)), [active.embedder || 'embeddinggemma:latest']);
+    fillChecks('strategyChecks', cfgCache.strategies || [], [active.strategy || 'hybrid']);
+    const d = cfgCache.defaults || {};
+    if (!$('runTopK').value) $('runTopK').value = (d.retrieval||{}).top_k ?? 4;
+    if (!$('runMaxTokens').value) $('runMaxTokens').value = (d.generation||{}).max_tokens ?? 160;
+    if (!$('runChunking').value) $('runChunking').value = (d.chunking||{}).strategy ?? 'section';
+    if (!$('runRetrieval').value) $('runRetrieval').value = (d.retrieval||{}).mode ?? 'hybrid';
+    if (!$('runQuestion').value) $('runQuestion').value = 'What was the average CO₂ emissions of Volvo cars sold in Europe in 2021?';
+  } catch (e) { $('runStatus').textContent = 'Could not load configuration: '+e; }
+}
+function setupRunHandlers() {
+  $('runButton').onclick = submitRun;
+  $('runMode').onchange = () => {
+    $('runStatus').textContent = $('runMode').value === 'matrix'
+      ? 'Matrix mode: all checked models × embedders × techniques.'
+      : 'Single-query / benchmark mode: sweeps every checked combination.';
+  };
+  $('runMode').onchange();
+}
+async function submitRun() {
+  const mode = $('runMode').value;
+  const llms = checkedValues('llmChecks'), embedders = checkedValues('embedChecks'),
+        strategies = checkedValues('strategyChecks');
+  if (!llms.length || !embedders.length || !strategies.length) {
+    $('runStatus').textContent = 'Select at least one LLM, one embedder and one technique.';
+    return;
+  }
+  const body = {
+    mode, dataset:$('runDataset').value, llm:llms[0], embedder:embedders[0],
+    strategy:strategies[0], llms, embedders, strategies, question:$('runQuestion').value,
+    limit:Number($('runLimit').value), top_k:Number($('runTopK').value),
+    chunk_strategy:$('runChunking').value, retrieval_mode:$('runRetrieval').value,
+    max_words:Number($('runMaxWords').value), overlap_words:Number($('runOverlap').value),
+    max_tokens:Number($('runMaxTokens').value), temperature:Number($('runTemp').value),
+    power_source:$('runPower').value, estimated_watts:Number($('runWatts').value),
+    judge:$('runJudge').checked, infer_filters:$('runInfer').checked,
+  };
+  $('runButton').disabled = true;
+  $('runResult').textContent = '';
+  $('runStatus').textContent = 'Submitting…';
+  try {
+    const resp = await fetch('/api/run', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+    const payload = await resp.json();
+    if (!resp.ok) throw new Error(payload.error || 'run rejected');
+    activeJob = payload.job_id;
+    jobStartQueries = (state.progress && state.progress.queries) || 0;
+    $('runStatus').textContent = `Job ${activeJob} queued…`;
+    $('runLog').textContent = `Parameters: ${JSON.stringify(payload.params.overrides)}`;
+    jobPoll = setInterval(pollJob, 2000);
+    pollJob();
+  } catch (e) {
+    $('runStatus').textContent = 'Error: '+e.message;
+    $('runButton').disabled = false;
+  }
+}
+async function pollJob() {
+  if (!activeJob) return;
+  const j = await fetch('/api/run/status?job='+encodeURIComponent(activeJob)).then(r=>r.json()).catch(()=>({status:'unknown'}));
+  const status = j.status || 'unknown';
+  $('runStatus').textContent = `Job ${activeJob}: ${status}`;
+  if (status === 'running') {
+    const p = await fetch('/api/progress').then(r=>r.json()).catch(()=>({queries:0}));
+    const expected = Math.max(1, ((j.params||{}).limit||1) * (((j.params||{}).llms||[]).length || 1) * (((j.params||{}).embedders||[]).length || 1) * (((j.params||{}).strategies||[]).length || 1));
+    const done = Math.max(0, (p.queries||0) - jobStartQueries);
+    $('jobProgress').style.width = Math.min(95, 100*done/expected).toFixed(0)+'%';
+    $('runLog').textContent = `Queries completed this run: ${done} / ${expected}`;
+  }
+  if (status === 'done' || status === 'error') {
+    clearInterval(jobPoll); jobPoll = null;
+    $('jobProgress').style.width = '100%';
+    $('runResult').textContent = j.error ? j.error : JSON.stringify(j.result, null, 2);
+    $('runLog').textContent = status === 'done' ? 'Finished. Results also written to output/results/ for matrix runs.' : 'Failed.';
+    $('runButton').disabled = false;
+    activeJob = null;
+    load();
+  }
+}
+
+async function load() {
+  const urls = ['/api/matrix','/api/progress','/api/status','/api/lineage?last=8'];
+  const [matrix, progress, status, lineage] = await Promise.all(urls.map(u => fetch(u).then(r=>r.json()).catch(()=>({}))));
+  state.matrix = matrix; state.progress = progress; state.status = status; state.lineage = lineage;
+  render();
+}
+
+function results() {
+  if (state.matrix.results && state.matrix.results.length) return state.matrix.results;
+  // Live mode: cells are scored from lineage by the server, so the same table
+  // (and the same metric columns) works before matrix.json exists.
+  return (state.progress.cells || []).map(c => ({ llm:c.llm, embedder:c.embedder, strategy:c.strategy,
+      summary:c.summary, rows:c.rows||[] }));
+}
+
+function renderStatus() {
+  const s = state.status || {};
+  const live = !s.matrix_exists;
+  const cells = results();
+  const done = live ? cells.length : (s.completed_cells || cells.length);
+  const total = s.expected_cells || 0;
+  const pctDone = total ? Math.round(100*done/total) : 0;
+  document.getElementById('statusPanel').innerHTML = `
+    <h2>Run status <span class="pill ${live?'mid':'good'}">${live?'● LIVE — from lineage':'✓ results file'}</span></h2>
+    <div class="muted">Matrix cells with data: <b>${done}</b>${total ? ' / '+total : ''}
+      &nbsp;·&nbsp; scored queries: <b>${live ? (state.progress.queries||0) : (s.lineage_records||0)}</b>
+      &nbsp;·&nbsp; lineage records: ${s.lineage_records || 0}
+      &nbsp;·&nbsp; ${s.json_path || '—'}</div>
+    <div class="progress"><div style="width:${pctDone}%"></div></div>
+    <div class="muted">${total ? pctDone+'% of planned cells' : 'collecting results'} — table below refreshes every 8 s</div>`;
+}
+
+function renderCards2() {
+  const rows = results();
+  const vals = key => rows.map(r=>r.summary[key]).filter(v=>v!==null&&v!==undefined&&!isNaN(v));
+  const best = key => vals(key).length ? Math.max(...vals(key)) : null;
+  const avg = key => vals(key).length ? vals(key).reduce((a,b)=>a+b,0)/vals(key).length : null;
+  const llmSet = new Set(rows.map(r=>r.llm)), embSet = new Set(rows.map(r=>r.embedder));
+  const cards = [
+    ['Matrix cells', rows.length, ''],
+    ['LLMs × embedders', llmSet.size+' × '+embSet.size, 'small'],
+    ['Best answer hit', pct(best('answer_hit_rate')), ''],
+    ['Best retrieval hit', pct(best('retrieval_hit@k')), ''],
+    ['Mean latency (s)', fmt(avg('mean_latency_s'),1), ''],
+    ['Decode speed (tok/s)', fmt(avg('mean_tokens_per_second'),1), ''],
+    ['Energy / query (J)', fmt(avg('mean_energy_j'),1), ''],
+    ['Mean LLM calls / query', fmt(avg('mean_llm_calls'),2), ''],
+  ];
+  document.getElementById('cards').innerHTML = cards.map(c =>
+    `<div class="card"><div class="label">${esc(c[0])}</div><div class="value ${c[2]}">${esc(c[1])}</div></div>`).join('');
+
+}
+
+function renderFilters() {
+  const rows = results();
+  const strategies = [...new Set(rows.map(r=>r.strategy))];
+  const llms = [...new Set(rows.map(r=>r.llm))];
+  const embeds = [...new Set(rows.map(r=>r.embedder))];
+  const sel = (id, values, label, current) =>
+    `<select id="${id}"><option value="all">${label}: all</option>`+
+    values.map(v=>`<option value="${esc(v)}" ${current===v?'selected':''}>${esc(v)}</option>`).join('')+`</select>`;
+  const esgSel = `<select id="fEsg"><option value="all">ESG: all</option>`+
+    ESG.map(v=>`<option value="${v}" ${state.esgFilter===v?'selected':''}>${v}</option>`).join('')+`</select>`;
+  document.getElementById('filters').innerHTML =
+    sel('fStrategy', strategies, 'Technique', state.filter) +
+    sel('fLlm', llms, 'LLM', state.llmFilter||'all') +
+    sel('fEmbed', embeds, 'Embedder', state.embedFilter||'all') + esgSel +
+    `<input id="qFilter" type="search" placeholder="search question…" value="${esc(state.q)}" style="background:#21262d;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:6px 10px;font-size:12px;min-width:190px">` +
+    `<button id="clearFilters">clear</button>` +
+    '<span class="muted">sort: click header · detail: click row · * = estimated power</span>';
+  document.getElementById('fStrategy').onchange = e => { state.filter=e.target.value; renderTable(); };
+  document.getElementById('fLlm').onchange = e => { state.llmFilter=e.target.value; renderTable(); };
+  document.getElementById('fEmbed').onchange = e => { state.embedFilter=e.target.value; renderTable(); };
+  document.getElementById('fEsg').onchange = e => { state.esgFilter=e.target.value; renderTable(); };
+  document.getElementById('qFilter').oninput = e => { state.q=e.target.value.toLowerCase().trim(); renderTable(); };
+  document.getElementById('clearFilters').onclick = () => {
+    state.filter='all'; state.llmFilter='all'; state.embedFilter='all'; state.esgFilter='all'; state.q='';
+    renderFilters(); renderTable();
+  };
+}
+
+const COLS = [
+  ['llm','LLM'], ['embedder','Embedder'], ['strategy','Technique'], ['questions','Q'],
+  ['retrieval_hit@k','Ret.hit'], ['answer_hit_rate','Ans.hit'], ['mean_token_f1','Token F1'],
+  ['numeric_match_rate','Numeric'], ['judge_supported_rate','Judge'], ['mean_latency_s','Latency (s)'],
+  ['mean_tokens_per_second','Tok/s'], ['mean_process_rss_mb','RSS MB'], ['model_memory_mb','Model MB'],
+  ['mean_energy_j','J/query'], ['mean_avg_watts','W avg'], ['mean_llm_calls','Calls']
+];
+
+function renderTable() {
+  let rows = results();
+  if (state.filter !== 'all') rows = rows.filter(r=>r.strategy===state.filter);
+  if (state.llmFilter && state.llmFilter !== 'all') rows = rows.filter(r=>r.llm===state.llmFilter);
+  if (state.embedFilter && state.embedFilter !== 'all') rows = rows.filter(r=>r.embedder===state.embedFilter);
+  const questionFilterOn = state.esgFilter !== 'all' || !!state.q;
+  document.getElementById('cellCount').textContent =
+    (state.matrix.results && state.matrix.results.length ? `(${rows.length} final)` : `(${rows.length} live, from lineage)`) +
+    (questionFilterOn ? ' — numbers are cell-level; questions are filtered' : '');
+  const key = state.sort, dir = state.desc ? -1 : 1;
+  rows.sort((a,b) => {
+    const x=a.summary[key], y=b.summary[key];
+    if (x===null||x===undefined) return 1; if (y===null||y===undefined) return -1;
+    return typeof x === 'number' ? (x-y)*dir : String(x).localeCompare(String(y))*dir;
+  });
+  let html = '<table><thead><tr>' + COLS.map(c=>
+    `<th data-key="${c[0]}">${c[1]}${state.sort===c[0]?(state.desc?' ↓':' ↑'):''}</th>`).join('')+'</tr></thead><tbody>';
+  rows.forEach((r,i) => {
+    const s=r.summary;
+    const shownRows = questionFilterOn ? (r.rows||[]).filter(matchesQuestion) : (r.rows||[]);
+    if (questionFilterOn && !shownRows.length) return;
+    html += `<tr class="clickable" data-i="${i}"><td>${esc(s.llm||r.llm)}</td><td>${esc(s.embedder||r.embedder)}</td>`+
+      `<td><b>${esc(s.strategy||r.strategy)}</b></td><td class="num">${s.questions??'—'}</td>`+
+      `<td class="num">${pill(s['retrieval_hit@k'])}</td><td class="num">${pill(s.answer_hit_rate)}</td>`+
+      `<td class="num">${fmt(s.mean_token_f1)}</td><td class="num">${fmt(s.numeric_match_rate)}</td>`+
+      `<td class="num">${pill(s.judge_supported_rate)}</td><td class="num">${fmt(s.mean_latency_s,1)}</td>`+
+      `<td class="num">${fmt(s.mean_tokens_per_second,1)}</td><td class="num">${fmt(s.mean_process_rss_mb,0)}</td>`+
+      `<td class="num">${fmt(s.model_memory_mb,0)}</td><td class="num">${fmt(s.mean_energy_j,1)}</td>`+
+      `<td class="num">${fmt(s.mean_avg_watts,1)}${s.power_measured?'':'*'}</td>`+
+      `<td class="num">${fmt(s.mean_llm_calls,2)}</td></tr>`;
+    if (state.open.has(i)) {
+      html += `<tr class="detail"><td colspan="${COLS.length}">`+
+        shownRows.map(q=>`<div style="margin:8px 0;padding:8px;border-left:2px solid var(--line)">`+
+          `<span class="pill">${esc(esgOf(q))}</span> <b>${esc(q.question)}</b><br><span class="muted">ref:</span> ${esc(q.reference||'—')}<br>`+
+          `<span class="muted">answer:</span> ${esc(q.answer)} <span class="muted">${q.answer_hit===true?'✓':q.answer_hit===false?'✗':''} [${(q.citations||[]).join(',')}]</span>`+
+          `</div>`).join('') + `</td></tr>`;
+    }
+  });
+  html += '</tbody></table>' || '<div class="empty">No results yet — the matrix is still running.</div>';
+  if (!rows.length) html = '<div class="empty">No results yet — the matrix is still running. Live progress comes from lineage.</div>';
+  document.getElementById('table').innerHTML = html;
+  document.querySelectorAll('th').forEach(th => th.onclick = () => {
+    const k=th.dataset.key; if (state.sort===k) state.desc=!state.desc; else {state.sort=k;state.desc=true;}
+    renderTable();
+  });
+  document.querySelectorAll('tr.clickable').forEach(tr => tr.onclick = () => {
+    const i=tr.dataset.i; state.open.has(i)?state.open.delete(i):state.open.add(i); renderTable();
+  });
+}
+
+function renderBars() {
+  const rr = state.matrix.retrieval_benchmarks || [];
+  if (!rr.length) { document.getElementById('bars').innerHTML='<div class="empty">No retrieval benchmark yet.</div>'; return; }
+  document.getElementById('bars').innerHTML = rr.map(x=>
+    `<div class="bar-row"><div>${esc(x.embedder)}</div>`+
+    `<div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,100*x['ndcg@10'])}%"></div></div>`+
+    `<div class="num">${fmt(x['ndcg@10'])}</div></div>`+
+    `<div class="bar-row"><div class="muted">MRR / P@1</div><div class="muted">${fmt(x.mrr)} / ${fmt(x['precision@1'])}</div><div></div></div>`
+  ).join('');
+}
+
+function niceStep(range, target) {
+  if (!(range > 0)) return 1;
+  const rough = range / target, mag = Math.pow(10, Math.floor(Math.log10(rough)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (m * mag >= rough) return m * mag;
+  return 10 * mag;
+}
+function renderScatter() {
+  const sel = document.getElementById('xMetric');
+  const key = sel ? sel.value : 'mean_latency_s';
+  if (sel) sel.onchange = renderScatter;
+  const label = sel ? sel.options[sel.selectedIndex].text : key;
+  const rows = results().filter(r=>r.summary.answer_hit_rate!=null &&
+      r.summary[key]!=null && !isNaN(r.summary[key]));
+  const host = document.getElementById('scatter');
+  if (!rows.length) { host.innerHTML='<div class="empty">No scored cells for this metric yet.</div>'; return; }
+  const W=920,H=330,padL=58,padR=24,padT=18,padB=54;
+  const xs = rows.map(r=>Number(r.summary[key]));
+  let xMin=Math.min(...xs), xMax=Math.max(...xs);
+  const step=niceStep(xMax-xMin, 6);
+  xMin=Math.max(0, Math.floor(xMin/step)*step);
+  xMax=Math.ceil(xMax/step)*step;
+  if (xMax===xMin) xMax=xMin+step;
+  const x=v=>padL+((v-xMin)/(xMax-xMin))*(W-padL-padR);
+  const y=v=>H-padB-(v/1.05)*(H-padT-padB);
+  const colors = e => String(e).includes('embeddinggemma') ? '#58a6ff'
+      : String(e).includes('qwen') ? '#d29922' : '#3fb950';
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  // y grid + labels (answer hit rate)
+  for (let i=0;i<=5;i++) {
+    const v=i/5, gy=y(v);
+    svg+=`<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#30363d" stroke-width="1"/>`;
+    svg+=`<text x="${padL-8}" y="${gy+4}" fill="#8b949e" font-size="11" text-anchor="end">${v.toFixed(1)}</text>`;
+  }
+  // x grid + numeric scale labels
+  for (let v=xMin; v<=xMax+1e-9; v+=step) {
+    const gx=x(v);
+    svg+=`<line x1="${gx}" y1="${padT}" x2="${gx}" y2="${H-padB}" stroke="#21262d" stroke-width="1"/>`;
+    svg+=`<text x="${gx}" y="${H-padB+16}" fill="#8b949e" font-size="11" text-anchor="middle">${Number(v.toFixed(3))}</text>`;
+  }
+  // axes
+  svg+=`<line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="#8b949e"/>`;
+  svg+=`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="#8b949e"/>`;
+  svg+=`<text x="${(padL+W-padR)/2}" y="${H-10}" fill="#8b949e" font-size="12" text-anchor="middle">${esc(label)} — axis ${xMin} to ${xMax}, step ${step}</text>`;
+  svg+=`<text x="14" y="${(padT+H-padB)/2}" fill="#8b949e" font-size="12" text-anchor="middle" transform="rotate(-90 14 ${(padT+H-padB)/2})">answer hit rate</text>`;
+  rows.forEach(r=>{
+    const s=r.summary, cx=x(Number(s[key])), cy=y(Number(s.answer_hit_rate));
+    svg+=`<circle cx="${cx}" cy="${cy}" r="6" fill="${colors(s.embedder||r.embedder)}" opacity=".85"><title>${esc((s.llm||r.llm)+' / '+(s.embedder||r.embedder)+' / '+(s.strategy||r.strategy))} — hit ${fmt(s.answer_hit_rate)}, ${esc(label)} ${fmt(s[key],2)}</title></circle>`;
+  });
+  svg+='</svg>';
+  host.innerHTML=svg;
+}
+
+function renderLineage() {
+  const rows = (state.lineage.records||[]).slice().reverse();
+  document.getElementById('lineage').innerHTML = rows.length ? '<table><thead><tr><th>strategy</th><th>LLM / embedder</th><th>ESG</th><th>question</th><th>answer</th></tr></thead><tbody>'+
+    rows.map(r=>{const c=r.config||{};return `<tr><td>${esc(r.strategy||r.route)}</td><td>${esc(c.generator||'')} / ${esc(c.embedder||'')}</td><td>${esc(esgOf(r))}</td><td>${esc((r.question||'').slice(0,80))}</td><td>${esc((r.answer||'').slice(0,110))}</td></tr>`;}).join('')+
+    '</tbody></table>' : 'No lineage records yet.';
+}
+
+function render() { renderStatus(); renderCards2(); renderFilters(); renderTable(); renderBars(); renderScatter(); renderLineage(); }
+setupRunHandlers(); loadConfig(); load(); setInterval(load, 8000);
+</script>
+</body>
+</html>

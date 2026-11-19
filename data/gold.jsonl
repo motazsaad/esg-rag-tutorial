@@ -1,0 +1,3 @@
+{"question": "What was the total number of employees at Nordwind in 2023?", "company": "Nordwind", "year": "2023", "expected_sections": ["GRI 2"], "expected_substrings": ["12,480"], "esg_dimension": "Social"}
+{"question": "Quali sono le emissioni Scope 1 di Solaria nel 2023?", "company": "Solaria", "year": "2023", "expected_sections": ["GRI 305"], "expected_substrings": ["18,760"], "esg_dimension": "Environmental"}
+{"question": "What is the Scope 2 market-based GHG emissions for Nordwind in 2023?", "company": "Nordwind", "year": "2023", "expected_sections": ["GRI 305"], "expected_substrings": ["12,900"], "esg_dimension": "Environmental"}

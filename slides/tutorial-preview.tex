@@ -1,0 +1,173 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\title{Retrieval-Augmented Analytics for Regulated Documents}
+\subtitle{Data Pipelines, Benchmarking, and Structured Extraction --- Slide preview}
+\author{Motaz K. H. Saad \and Antonella Longo}
+\institute{DataLab, Dept.\ of Engineering for Innovation, University of Salento}
+\date{ESG RAG tutorial --- 12-slide preview}
+
+\begin{document}
+
+% 1
+\begin{frame}
+  \titlepage
+  \vspace{0.5em}
+  \small Format: 1.5 h or 3 h (3 h preferred, with hands-on lab)
+\end{frame}
+
+% 2
+\begin{frame}{Why regulated documents are a data-management problem}
+  \begin{itemize}
+    \item RAG grounds LLMs in private, factual, regulated collections: sustainability reports (EU CSRD/ESRS), financial filings, legal and clinical records
+    \item Practitioners must choose chunking, indexing, embedding models and LLMs
+    \item Hard question: is the end-to-end system \textbf{faithful, attributable, auditable, reproducible} at scale?
+    \item Scale and heterogeneity (PDF, HTML, XML; EN/IT) make this a database and data-engineering problem
+  \end{itemize}
+\end{frame}
+
+% 3
+\begin{frame}{Outline}
+  \begin{enumerate}
+    \item Foundations and trustworthiness requirements \hfill \textit{15 min}
+    \item Document and data management for RAG at scale \hfill \textit{25 min (3 h: 45)}
+    \item Evaluation and benchmarking for trustworthy RAG \hfill \textit{30 min (3 h: 50)}
+    \item Open challenges and future directions \hfill \textit{10 min}
+  \end{enumerate}
+  \vspace{0.5em}
+  \textbf{3 h extension:} filtered/hybrid vector search deep dive (20) \,$\cdot$\, evaluation deep dive (20) \,$\cdot$\, guided lab (40) \,$\cdot$\, debrief (10)
+\end{frame}
+
+% 4
+\begin{frame}{Part 1 --- RAG paradigms and trustworthiness}
+  \begin{itemize}
+    \item Paradigms: naive $\rightarrow$ advanced (rerank, rewrite, decompose) $\rightarrow$ modular RAG
+    \item Retrieval--generation coupling for knowledge-intensive tasks
+    \item Trustworthiness desiderata:
+    \begin{itemize}
+      \item faithfulness and provenance/attribution
+      \item verifiability and temporal consistency
+      \item auditability and explainability
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+% 5
+\begin{frame}{Part 2 --- Document and data pipeline for RAG}
+  \begin{center}
+    \small
+    \begin{tabular}{l l}
+      \textbf{Stage} & \textbf{Concerns} \\ \hline
+      Parse and clean & PDF/HTML/XML, de-duplication, temporal versioning \\
+      Chunk & fixed-window vs.\ section-aware vs.\ semantic; token economics \\
+      Embed & general vs.\ domain-adapted vs.\ multilingual models \\
+      Index and store & vector indexes; metadata (company, year, GRI/ESRS) \\
+      Retrieve and generate & BM25 + dense fusion, late interaction, re-ranking, LLM \\
+      Extract & structured KPIs into relational tables \\
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+% 6
+\begin{frame}{Part 2 --- Vector data management and filtered retrieval}
+  \begin{itemize}
+    \item Vector indexes: HNSW/IVF, disk-resident billion-scale ANN (DiskANN), GPU search (FAISS)
+    \item Vector DBMS landscape: Milvus, Manu, and others
+    \item \textbf{Filtered and hybrid retrieval:} predicates on company, report year, GRI/ESRS standard
+    \item Interplay of filtering, ANN indexing, hybrid scoring, and index freshness
+    \item Systems: partitioning, replication, algorithm--system co-design for RAG serving
+  \end{itemize}
+\end{frame}
+
+% 7
+\begin{frame}{Hybrid document--database analytics}
+  \begin{itemize}
+    \item Route each question to:
+    \begin{itemize}
+      \item evidence-grounded retrieval over report narratives, or
+      \item schema-grounded Text-to-SQL over extracted ESG tables
+    \end{itemize}
+    \item Enforce read-only SQL execution
+    \item Keep both the SQL and the source passages as provenance
+  \end{itemize}
+\end{frame}
+
+% 8
+\begin{frame}{Part 3 --- Metrics and benchmark design}
+  \begin{itemize}
+    \item Retrieval: Recall/Precision@k, NDCG
+    \item Generation: faithfulness, answer relevancy, factual correctness
+    \item Benchmarks: BEIR, MTEB; RAGAS for automated evaluation
+    \item Reproducible ANN evaluation (ANN-Benchmarks)
+    \item \textbf{LLM-as-judge reliability:} nondeterminism, judge bias, calibration on a human-validated sample
+    \item Test-set generation without human labels
+  \end{itemize}
+\end{frame}
+
+% 9
+\begin{frame}{Part 3 --- Data lineage and systems metrics}
+  \begin{itemize}
+    \item Lineage as queryable records: answer claims, source passages, corpus version, retrieval configuration, prompts/models, executed SQL
+    \item Systems metrics next to answer quality:
+    \begin{itemize}
+      \item latency, index-build time, memory footprint
+      \item tokens and cost per query
+    \end{itemize}
+    \item Output: quality--cost--latency trade-offs for each configuration
+  \end{itemize}
+\end{frame}
+
+% 10
+\begin{frame}{Case study: SESG (multilingual ESG reports, EN/IT)}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item 14,389 documents converted
+        \item 3,728 active reports indexed
+        \item 59 GRI-referenced KPI questions
+        \item 29-table extraction schema
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+        \item 5 LLMs compared
+        \item 5 embedding models compared
+        \item Corpus-scale runs on CINECA Leonardo
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \vspace{1em}
+  \small Used as a worked example throughout; the methodology is not tied to ESG.
+\end{frame}
+
+% 11
+\begin{frame}{Open challenges and 3-hour agenda}
+  \begin{itemize}
+    \item Hallucination and evidence verification
+    \item Temporal consistency as regulations evolve
+    \item Agentic and self-reflective RAG loops
+    \item Regulatory compliance: explainability, audit trails, human-in-the-loop
+  \end{itemize}
+  \vspace{0.5em}
+  \small Agenda (3 h): foundations 15 \,$\cdot$\, pipeline with vector indexing 45 \,$\cdot$\, evaluation 50 \,$\cdot$\, challenges 10 \,$\cdot$\, Q\&A 10 \,$\cdot$\, lab 40 \,$\cdot$\, debrief 10
+\end{frame}
+
+% 12
+\begin{frame}{Hands-on lab and resources}
+  \begin{itemize}
+    \item Attendees run a prepared RAG pipeline on a regulated-document corpus (Python, Docker vector store, quantized open-source LLMs via Ollama)
+    \item OS: Linux, macOS, or Windows 11 with WSL2; laptop with at least 8\,GB RAM
+    \item Follow-along mode: pre-pulled Docker images and cached models; no downloads over conference Wi-Fi
+    \item Code: open source, Apache-2.0
+    \item Companion repositories: \small \url{https://github.com/datalab-unisalento/ESG-RAG-benchmark-ragas}, \url{https://github.com/datalab-unisalento/benchmark-embeddings-esg}, \url{https://github.com/kiannakazemi/esg-rag-reference-free-evaluation}
+  \end{itemize}
+  \vspace{0.5em}
+  \centering Questions and discussion
+\end{frame}
+
+\end{document}

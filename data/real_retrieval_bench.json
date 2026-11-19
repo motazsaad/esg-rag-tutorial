@@ -1,0 +1,514 @@
+{
+  "source": {
+    "repo": "https://github.com/datalab-unisalento/benchmark-embeddings-esg",
+    "paper": "Benchmarking Embedding Models for ESG Data (ITADATA 2026)",
+    "license": "Apache-2.0",
+    "note": "First 24 English records, unchanged, from the 312-record cleaned benchmark."
+  },
+  "records": [
+    {
+      "query": "Does the company have policies to reduce CO2 emissions?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented a decarbonization strategy that envisions the adoption of renewable energy and energy efficiency measures to reduce CO2 emissions by 40% by 2030.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has introduced more sustainable practices in its supply chain to improve its environmental impact.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently opened a new operational base in Asia.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company use renewable energy sources?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "Currently, 60% of the energy consumed by the company comes from renewable sources, with the goal of reaching 100% by 2040.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has launched a project to optimize energy consumption and reduce operating costs.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a new line of eco-sustainable products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "How is the company addressing climate change?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has adopted a decarbonization plan that includes the use of renewable energy and a 50% reduction in emissions by 2030.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes environmental awareness initiatives and participates in reforestation projects.",
+          "relevance": 2,
+          "label": "Moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its market in Asia with new operating offices.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company adopt measures to reduce waste?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented a circular economy program that aims to reduce waste by 40% over the next five years.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has launched an awareness campaign to encourage recycling among employees.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently introduced a new line of digital products for the European market.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What are the company's policies on water management?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented a plan to reduce water consumption that includes wastewater recycling and the optimization of production processes to minimize waste.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company plans to adopt new technologies to improve water management and reduce consumption in the coming years.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently renewed its own data management system to optimize internal operations.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company provide information on biodiversity?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has published a detailed report on biodiversity protection initiatives, including reforestation projects and the safeguarding of natural habitats.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company participates in environmental initiatives to conserve nature and to respect ecosystems.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its production facility to increase distribution capacity.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What strategies does the company adopt for managing natural resources?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented policies for sustainable resource use, reducing water consumption and virgin material use by 30% over the last five years.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has introduced measures to improve production efficiency and reduce waste.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a new range of technological products aimed at the European market.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company assess the environmental impact of its own supply chain? If so, by what criteria?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company conducts an analysis of the environmental impact of the supply chain through periodic supplier audits and assessments of Scope 3 emissions.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company collaborates with suppliers to improve sustainability practices and reduce the use of non-recyclable materials.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has announced a new international expansion plan to reach new markets.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Is the company involved in environmental initiatives?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company participates in reforestation programs and biodiversity conservation projects in collaboration with environmental organizations.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes sustainability practices among employees and supports environmental awareness events.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its distribution network to improve logistical efficiency.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Are there any environmental certifications for the company?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has obtained ISO 14001 certification for environmental management and LEED certification for the energy efficiency of its buildings.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company follows recognized environmental guidelines and participates in voluntary sustainability programs.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a new range of products for the technology sector.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's approach to environmental sustainability?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has integrated sustainability throughout all stages of the production cycle, adopting eco-friendly practices and reducing the overall environmental impact.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has launched eco-design projects to develop more sustainable products and reduce the use of polluting materials.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently acquired a new company to diversify its activities.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company have a sustainability report?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company annually publishes a sustainability report that includes data on the environmental, social, and economic impact of its activities.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company has launched a project to monitor and reduce the environmental impact of its operations.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its online sales network to reach new customers.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on environmental protection?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to reducing the environmental impact of its activities through sustainability policies and the reduction of CO2 emissions.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company actively participates in environmental protection projects and promotes corporate social responsibility.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched an advertising campaign to promote its own products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "Does the company have an environmental management system?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented an ISO 14001-certified environmental management system to monitor and improve environmental performance.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company adopts sustainable resource management practices and promotes energy efficiency in its production processes.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently initiated a partnership with a competing company for the development of new technologies.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's commitment to environmental responsibility?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to reducing the environmental impact of its activities through sustainability policies and reducing CO2 emissions.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company actively participates in environmental protection projects and promotes corporate social responsibility.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched an advertising campaign to promote its products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's approach to environmental conservation?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company adopts environmental conservation policies that include the protection of biodiversity and the reduction of CO2 emissions.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company participates in reforestation and environmental awareness projects to promote sustainability.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its distribution network to reach new markets.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on energy efficiency?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented measures to improve the energy efficiency of its facilities and reduce energy consumption.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes the use of renewable energy and the optimization of production processes to reduce environmental impact.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a marketing campaign to promote its products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on waste management?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented a waste reduction program that includes recycling and reusing materials to reduce environmental impact.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes separate waste collection and the adoption of sustainable practices to manage the waste generated.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its online sales network to reach new customers.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on water conservation?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company has implemented measures to reduce water consumption and optimize the use of water resources in production processes.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes awareness of the responsible use of water and the adoption of technologies for water conservation.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched an advertising campaign to promote its own products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on reducing its carbon footprint?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to reducing CO2 emissions through the adoption of renewable energy and the optimization of production processes.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes carbon emissions offsetting and the adoption of sustainable practices to reduce its environmental impact.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a marketing campaign to promote its own products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on sustainable procurement?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to selecting certified suppliers and adopting responsible procurement practices to reduce environmental impact.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes the traceability of the supply chain and the adoption of sustainable criteria for supplier selection.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its own distribution network to reach new markets.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on environmental compliance?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to complying with current environmental regulations and to adopting sustainable practices to reduce the environmental impact of its activities.",
+          "relevance": 3,
+          "label": "Highly relevant"
+        },
+        {
+          "text": "The company promotes employee training on environmental regulations and the adoption of pollution prevention measures.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched an advertising campaign to promote its products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on environmental protection?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company is committed to protecting the environment through sustainability policies and nature conservation projects.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes employee participation in environmental protection initiatives and awareness-raising about sustainability.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently expanded its online sales network to reach new customers.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    },
+    {
+      "query": "What is the company's policy on environmental impact assessment?",
+      "domain": "Environmental",
+      "documents": [
+        {
+          "text": "The company conducts periodic assessments of the environmental impact of its activities and adopts corrective measures to reduce the overall impact.",
+          "relevance": 3,
+          "label": "highly relevant"
+        },
+        {
+          "text": "The company promotes transparency regarding environmental impact and stakeholder participation in the assessment of impacts.",
+          "relevance": 2,
+          "label": "moderately relevant"
+        },
+        {
+          "text": "The company has recently launched a marketing campaign to promote its products.",
+          "relevance": 0,
+          "label": "irrelevant"
+        }
+      ]
+    }
+  ]
+}

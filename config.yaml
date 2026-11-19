@@ -1,0 +1,83 @@
+# Effective configuration of the ESG RAG lab.
+# Override any value with ESG_RAG_<SECTION>_<KEY> or `cli --set section.key=value`.
+
+ollama:
+  base_url: http://localhost:11434
+  request_timeout: 300
+
+models:
+  # Active models used by `index`, `query`, `extract`, `benchmark`
+  generator: qwen3:4b-instruct
+  embedder: embeddinggemma:latest
+  judge: qwen3:4b-instruct
+  rewrite: qwen3:4b-instruct
+  rerank: qwen3:4b-instruct
+  # Candidate pools for `doctor` / `matrix`
+  llms: [qwen3:4b-instruct, gemma3:4b]
+  embedders: [embeddinggemma:latest, qwen3-embedding:0.6b]
+
+paths:
+  corpus_dir: data/corpus                          # synthetic smoke-test corpus
+  real_corpus_dir: data/real_corpus                # sampled published ESG reports
+  kpi_questions: data/kpi_questions.yaml
+  gold_set: data/gold.jsonl
+  real_qa: data/real_qa.json
+  real_retrieval_bench: data/real_retrieval_bench.json
+  index: output/index.json
+  lineage: output/lineage.jsonl
+  results_dir: output/results
+  matrix_output: output/results/matrix.json
+  matrix_csv: output/results/matrix.csv
+  matrix_report: output/results/matrix_report.md
+
+chunking:
+  strategy: section        # section | fixed | semantic
+  max_words: 140
+  overlap_words: 25
+  min_words: 30
+  semantic_threshold: 0.15
+
+retrieval:
+  top_k: 4
+  mode: hybrid             # dense | bm25 | hybrid
+  bm25_k1: 1.5
+  bm25_b: 0.75
+  rrf_k: 60
+  max_evidence_chars: 900
+  candidate_multiplier: 3  # pool size for rerank / multi-query
+  infer_filters: false     # let the LLM derive company/year/GRI filters
+
+strategy:
+  name: hybrid   # naive | hybrid | filtered | multi_query | rerank | self_rag | decompose
+  multi_query_variants: 3
+  rerank_top_n: null
+  self_rag_max_loops: 1
+  decompose_max_subqs: 3
+
+generation:
+  temperature: 0.0
+  max_tokens: 256
+  seed: 42
+  num_ctx: 8192
+  think: false
+  insufficient_evidence: INSUFFICIENT EVIDENCE
+
+benchmark:
+  dataset: synthetic       # synthetic | real
+  limit: null
+  judge: false
+  answer_metric: substring # substring | token_f1 | judge
+
+system_metrics:
+  enabled: true
+  power_source: auto       # auto | rapl | nvidia | estimate | none
+  estimated_watts: 65.0    # fallback assumption when no sensor is readable
+
+matrix:
+  llms: [qwen3:4b-instruct, gemma3:4b]
+  embedders: [embeddinggemma:latest, qwen3-embedding:0.6b]
+  strategies: [naive, hybrid, multi_query, rerank, self_rag]
+  dataset: real
+  limit: 3
+  judge: true
+  skip_missing_models: true

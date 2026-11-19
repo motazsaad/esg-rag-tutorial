@@ -1,0 +1,90 @@
+# Subset of the 59 GRI-referenced KPI prompts used in the SESG case study
+# (source: materials/sesg-materials/03_platform_documentation/prompts.yaml).
+# Structure is identical, so the full prompts.yaml can be dropped in as-is.
+
+questions:
+  - q_id: '1'
+    id: '1'
+    question: What is the legal name of the company? Just return the name without additional details.
+    reference: GRI 2_2-1
+    metric: Legal name of the organization
+    esg_category: Gov
+    section: 'GRI 2: General Disclosures 2021'
+    content_present_as: Narrative
+    data_type: Text
+    db_table_name: kpi_extraction_atomic
+    kpi_id: GRI 2_2-1_1
+
+  - q_id: '6'
+    id: '30'
+    question: What is the total number of employees? Return only a number or NA.
+    reference: GRI 2_2-7
+    metric: Total number of employees by gender and region
+    esg_category: Social
+    section: 'GRI 2: General Disclosures 2021'
+    content_present_as: Table
+    data_type: num
+    db_table_name: kpi_extraction_atomic
+    kpi_id: GRI 2_2-7_6
+
+  - q_id: '27'
+    id: '181'
+    question: |-
+      What is the energy consumption in the reporting year? Return the result in JSON format as below.
+      Output format:
+      {
+        "reporting year": "<YYYY or NA>",
+        "value": "<number or NA>",
+        "unit": "<unit or NA>"
+      }
+    reference: GRI 302_302-1
+    metric: Electricity consumption
+    esg_category: Env
+    section: 'GRI 302: Energy 2016'
+    content_present_as: Table
+    data_type: num
+    db_table_name: kpi_energy
+    kpi_id: GRI 302_302-1_27
+
+  - q_id: '32'
+    id: '203'
+    question: |-
+      What is the Gross direct (Scope 1) GHG emissions for the reporting year? Return the result in JSON format as below.
+      Output format:
+      {
+        "reporting year": "<YYYY or NA>",
+        "value": "<numeric or NA>",
+        "unit": "<unit or NA>"
+      }
+    reference: GRI 305_305-1
+    metric: Scope 1 ghg emissions
+    esg_category: Env
+    section: 'GRI 305: Emissions 2016'
+    content_present_as: Table
+    data_type: num
+    db_table_name: kpi_emissions
+    kpi_id: GRI 305_305-1_32
+
+  - q_id: '45'
+    id: '230'
+    question: |-
+      What is the average hours of training that the organization's employees have undertaken during the reporting period, by gender?
+      Return the answer in JSON format using the schema provided below.
+      {
+        "reporting_year": "YYYY or NA",
+        "average_hours_of_training": [
+          {"gender": "male or female or all", "average_hours": "number as string or NA"}
+        ]
+      }
+      Important formatting rules:
+      - All numeric values must be strings (e.g., "27" not 27)
+      - Use "NA" (as a string) when data is not available
+      - Use "all" for gender when data is not disaggregated by gender
+    reference: GRI 404_404-1
+    metric: Training hours by gender
+    esg_category: Social
+    section: 'GRI 404: Training and Education 2016'
+    content_present_as: Table
+    data_type: num
+    db_table_name: kpi_emp_training
+    kpi_id: GRI 404_404-1_45

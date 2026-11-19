@@ -1,0 +1,11 @@
+# Generated indexes and lineage are local-only, but summary result artefacts
+# (JSON/CSV/Markdown tables) are committed so the dashboard/results are shareable.
+output/*
+!output/results/
+output/results/*
+!output/results/*.json
+!output/results/*.csv
+!output/results/*.md
+
+__pycache__/
+*.pyc
