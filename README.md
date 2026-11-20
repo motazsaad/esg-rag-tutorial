@@ -1,23 +1,19 @@
 # ESG RAG — end-to-end, local-first pipeline
 
-Reference implementation for the ESG RAG tutorial
-*Retrieval-Augmented Analytics for Regulated Documents: Data Pipelines,
-Benchmarking, and Structured Extraction*.
+Companion implementation for the ICDE 2027 tutorial proposal
+**"Data Management for ESG and Regulated Document Analytics: Pipelines, Retrieval, Provenance, and Evaluation"**
+by Motaz K. H. Saad and Antonella Longo (University of Salento).
 
-This is a **working** pipeline, not a slideware sketch. It ingests ESG report
-text, chunks it by section, embeds it with a local Ollama embedding model,
-indexes it with metadata, retrieves with **filtered hybrid search** (dense +
-BM25), and produces either a **cited natural-language answer** or a **structured
-KPI value** ready for a relational table. Every query writes an append-only
-**lineage** record with the exact source chunks, configuration, models, latency
-and token counts.
+This repository provides a **working, local-first** RAG/analytics pipeline and lab materials for regulated-document (ESG) settings. It demonstrates data-management-oriented components of the tutorial: corpus ingestion and versioned artifacts, section-aware chunking, metadata-aware indexing and filtered hybrid retrieval (dense + BM25), grounded answer generation with citations, optional structured KPI extraction, and append-only **lineage/provenance** records (sources, configuration, models, latency, token/cost-related metrics).
+
+The tutorial framing also covers ESG data management topics such as reporting standards/interoperability (e.g. CSRD/ESRS, GRI, ISSB, digital reporting), data quality/comparability, and evidence-grounded claim verification relevant to greenwashing analysis; this codebase serves as a practical lab companion for pipeline, retrieval, provenance, and evaluation workflows.
 
 Everything runs on a laptop with no API keys and no cloud services.
 
 ```
-parse → section-aware chunk → embedgemma embeddings → local vector index
+parse → section-aware chunk → embeddings → local vector index
       → filtered hybrid retrieval (dense + BM25, RRF fusion)
-      → qwen3 grounded answer [S#]  /  KPI JSON extraction
+      → grounded answer [S#] / structured KPI extraction
       → lineage log + systems metrics
 ```
 
@@ -60,13 +56,10 @@ python3 -m unittest discover -s tests    # same checks as unittest, optional
 
 > **Real ESG data + model matrix:** see
 > [`docs/REAL_DATA_RESULTS.md`](docs/REAL_DATA_RESULTS.md) and
-> [`data/PROVENANCE.md`](data/PROVENANCE.md). A 26-slide walkthrough (ESG
-> reporting background + implemented pipeline) is in
-> [`slides/pipeline-lab.pdf`](slides/pipeline-lab.pdf).
-> The lab includes a small sample
-> of the published ESG corpora and runs the same pipeline with two generators
-> (`qwen3:4b-instruct`, `gemma3:4b`), two embedders
-> (`embeddinggemma:latest`, `qwen3-embedding:0.6b`) and seven RAG techniques.
+> [`data/PROVENANCE.md`](data/PROVENANCE.md). A walkthrough of the implemented
+> pipeline is in [`slides/pipeline-lab.pdf`](slides/pipeline-lab.pdf).
+> The lab includes a small sample of the published ESG corpora and runs the same
+> pipeline with multiple generators/embedders and RAG techniques.
 
 ## 3. CLI walkthrough
 
@@ -119,133 +112,11 @@ python3 -m esg_rag.cli --set chunking.strategy=semantic \
 Add `--json` to any command for machine-readable output, e.g.
 `python3 -m esg_rag.cli query "..." --json`.
 
-### REST service (live demo)
+## Slides
 
-```bash
-python3 dashboard.py --port 8080       # results dashboard (auto-refresh, live progress)
-python3 serve.py                       # REST demo: http://127.0.0.1:8000/docs
-curl -s localhost:8000/health
-curl -s -X POST localhost:8000/query -H 'Content-Type: application/json' \
-  -d '{"question":"What were the Scope 1 emissions at Nordwind in 2023?",
-       "filters":{"company":"Nordwind"}}'
-```
+- `slides/tutorial-preview.tex` / `slides/tutorial-preview.pdf` — updated tutorial proposal preview (aligned with ICDE 2027 proposal)
+- `slides/pipeline-lab.tex` / `slides/pipeline-lab.pdf` — implemented pipeline and lab walkthrough
 
-The dashboard (`dashboard.py`) additionally has a **Configure & Run** tab for
-launching parameterised experiments from the browser (checkbox groups for
-LLM/embedder/technique combinations, allowlisted parameters, single background
-job, live status). See
-[`docs/REAL_DATA_RESULTS.md`](docs/REAL_DATA_RESULTS.md).
+## License
 
-`GET /health`, `POST /index`, `POST /query`, `POST /extract`, `GET /lineage`.
-The HTTP route calls the same `ESGRAGPipeline` methods as the CLI.
-
-## 4. What is in the box
-
-```
-esg-rag/
-├── config.yaml                  # single reproducible configuration
-├── requirements.txt
-├── run_smoke_test.sh
-├── run_real_benchmark.sh        # real-data benchmark + matrix in one command
-├── dashboard.py                 # zero-dependency live results dashboard (:8080)
-├── dashboard/index.html         # dashboard UI (cards, tables, charts, lineage)
-├── serve.py                     # optional stdlib REST demo service
-├── docs/REAL_DATA_RESULTS.md    # real-data provenance, techniques, matrix results
-├── data/
-│   ├── corpus/                  # 2 synthetic EN/IT reports (smoke test)
-│   ├── real_corpus/             # 6 verbatim excerpts of published ESG reports
-│   ├── real_qa.json             # 6 published QA pairs with reference answers
-│   ├── real_retrieval_bench.json# 24 graded query/doc records (IR evaluation)
-│   ├── PROVENANCE.md            # licenses, upstream paths, sampling method
-│   ├── kpi_questions.yaml       # 5 GRI prompts from the SESG 59-prompt set
-│   └── gold.jsonl               # 3 literal-answer benchmark items
-├── esg_rag/
-│   ├── config.py                # config, env + --set overrides
-│   ├── ollama.py                # /api/embed, /api/chat, JSON mode, timings
-│   ├── chunking.py              # section/fixed/semantic chunking, page/GRI metadata
-│   ├── indexing.py              # per-embedder vector stores, cosine search, filters
-│   ├── retrieval.py             # BM25, dense, hybrid (RRF) retrieval
-│   ├── strategies.py            # naive / hybrid / filtered / multi_query / rerank / self_rag / decompose
-│   ├── generation.py            # cited answers + "INSUFFICIENT EVIDENCE"
-│   ├── extraction.py            # structured KPI extraction
-│   ├── evaluate.py              # retrieval/answer metric helpers
-│   ├── lineage.py               # append-only audit log
-│   ├── pipeline.py              # orchestrator, matrix runner, smoke test
-│   └── cli.py                   # command line UI
-├── tests/test_smoke.py
-└── output/                      # per-embedder indexes, lineage.jsonl, results/ (gitignored)
-```
-
-### Design decisions that map to the tutorial
-
-| Tutorial theme | Where it appears here |
-|---|---|
-| Section-aware chunking, metadata, temporal/GRI provenance | `chunking.py`, `indexing.py` |
-| Embedding model selection (multilingual) | `embeddinggemma:latest` in `config.yaml` |
-| Filtered retrieval by company / year / GRI | `--company`, `--year`, `--gri`, `--filter k=v`, optional LLM inference |
-| Hybrid BM25 + dense fusion, re-ranking, self-RAG | `retrieval.py` (RRF), `strategies.py` (7 techniques) |
-| Multi-model / multi-configuration benchmarking | `matrix` command; 2 LLMs × 2 embedders × techniques; `output/results/` |
-| Real published ESG corpus and QA set | `data/real_corpus/`, `data/real_qa.json`, `data/PROVENANCE.md` |
-| Faithfulness, attribution, verifiability | `[S#]` citations + `INSUFFICIENT EVIDENCE` guard + optional LLM judge |
-| Document → structured data route | `extraction.py` + `kpi_questions.yaml` (JSON mode) |
-| Reproducible benchmark, no human labels | `gold.jsonl`, `evaluate.py` |
-| Data lineage + systems metrics | `lineage.py`, `metrics` in every result |
-| Scale-out discussion | swap `indexing.VectorStore` for FAISS/Milvus/DiskANN; interface unchanged |
-
-## 5. Configuration and customization
-
-`config.yaml` holds all knobs. Override any value with
-`ESG_RAG_<SECTION>_<KEY>` environment variables, e.g.:
-
-```bash
-ESG_RAG_MODELS_GENERATOR=gemma3:4b python3 -m esg_rag.cli query "..."
-ESG_RAG_RETRIEVAL_MODE=dense python3 -m esg_rag.cli evaluate
-```
-
-* **Real corpus:** add `.txt`/`.md` files to `data/corpus/` with the same
-  `<!-- key: value -->` header and `<!-- page: N -->` markers as the examples,
-  then `index --force`. Upstream PDF/HTML parsers only need to emit this text
-  format.
-* **Full SESG prompt set:** copy
-  `materials/esg/sesg-materials/03_platform_documentation/prompts.yaml` over
-  `data/kpi_questions.yaml` — the schema is identical (59 GRI questions).
-* **Structured output:** `json_schema` on a KPI definition is passed directly
-  to Ollama's constrained JSON mode; otherwise "json" in the question text
-  enables plain JSON mode.
-* **At scale** (the 3-hour tutorial's Part 2 extension): `VectorStore` is the
-  only component that knows about storage. Replace it with an ANN index that
-  implements `dense_search` / `all_records` and keep the rest unchanged.
-* **Real data:** `python3 -m esg_rag.cli --corpus real evaluate --dataset real`;
-  the matrix runner builds one index per embedder automatically.
-
-## 6. Data lineage record
-
-One JSON object per query is appended to `output/lineage.jsonl`:
-
-```json
-{
-  "route": "rag_answer",
-  "question": "...",
-  "filters": {"company": "Nordwind", "year": "2023"},
-  "config": {"generator": "...", "embedder": "...", "retrieval": {...},
-             "corpus_fingerprint": "…"},
-  "retrieval": {"mode": "hybrid", "passages": [{"chunk_id": "…", "score": …, "metadata": {...}}]},
-  "answer": "... [S2]",
-  "citations": ["2"],
-  "metrics": {"total_latency_s": …, "embedding_latency_s": …,
-              "generation_latency_s": …, "prompt_tokens": …,
-              "completion_tokens": …}
-}
-```
-
-This is the audit trail that makes answers attributable and reproducible.
-
-## 7. Notes
-
-* The bundled reports are **fictional** and exist only so the lab needs no
-  network access beyond Ollama. They are not real ESG disclosures.
-* Benchmark pass criteria in `smoke_test()` are structural (index built,
-  citations present, value parsed, benchmark ran); the reported hit rates are
-  informational because small local models vary run to run.
-* Code is released under Apache-2.0, matching the tutorial proposal's
-  commitment to open-source lab artifacts.
+Open-source, Apache-2.0.
